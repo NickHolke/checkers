@@ -27,19 +27,35 @@ class Board
     end
   end
 
+  def deep_dup
+    dup_board = Board.new
+
+    pieces = @rows.flatten.compact
+
+    pieces.each do |piece|
+      dup_board[piece.position] = Piece.new(dup_board, piece.position, piece.color, piece.king)
+    end
+    dup_board
+  end
+
 end
 
 if __FILE__ == $PROGRAM_NAME
   board = Board.new
-  piece1 = Piece.new(board,[4,4],:W)
-  piece2 = Piece.new(board,[3,3],:B)
+  piece1 = Piece.new(board, [1,3], :B, true)
+  piece2 = Piece.new(board, [2,2], :W)
+  piece3 = Piece.new(board, [4,2], :W)
+  piece4 = Piece.new(board, [4,4], :W)
 
-  board[[4,4]] = piece1
-  board[[3,3]] = piece2
+  board[[1,3]] = piece1
+  board[[2,2]] = piece2
+  board[[4,2]] = piece3
+  board[[4,4]] = piece4
 
   board.display
-  piece2.perform_slide([4,2])
-  puts "///////////////////"
+  p "///////////////"
+
+  piece1.perform_moves([[3,1],[5,3],[3,6]])
   board.display
 
 end

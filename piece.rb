@@ -1,5 +1,7 @@
 require 'byebug'
 
+class InvalidMoveError < ArgumentError; end
+
 class Piece
   attr_reader :color
   attr_accessor :king, :position, :board
@@ -9,11 +11,11 @@ class Piece
   KING_SLIDE_MOVES = [[-1,-1], [-1,1], [1,-1], [1,1]]
   KING_JUMP_MOVES = [[-2,2], [-2,-2], [2,-2], [2,2]]
 
-  def initialize(board, position, color)
+  def initialize(board, position, color, king = false)
     @board = board
     @position = position
     @color = color
-    @king = false
+    @king = king
   end
 
   def explore_slide_moves(move)
@@ -29,8 +31,6 @@ class Piece
       []
     end
   end
-
-
 
   def explore_jump_moves(move)
     move_row, move_col = move[0], move[1]
@@ -102,20 +102,25 @@ class Piece
     true
   end
 
+  def perform_moves(move_sequence)
+    if valid_move_seq?(move_sequence)
+      perform_moves!(move_sequence)
+    else
+      raise InvalidMoveError.new"Invalid Move Sequence"
+    end
+  end
+
   def perform_moves!(move_sequence)
     if move_sequence.length == 1
-      perform_slide(move_sequence[0])
-      perform_jump(move_sequence[0])
+      perform_slide(move_sequence[0]) || perform_jump(move_sequence[0]) ||
+        (raise InvalidMoveError.new"Invalid Move Sequence")
     else
       move_sequence.each do |move|
-        perform_jump(move)
+        if perform_jump(move) == false
+          raise InvalidMoveError.new"Invalid Move Sequence"
+        end
       end
     end
-
-
-
-
-
   end
 
   def valid_moves
@@ -138,5 +143,16 @@ class Piece
         end
       end
     valid_moves
+  end
+
+  def valid_move_seq?(move_sequence)
+    dup_board = @board.deep_dup
+
+    begin
+      dup_board[self.position].perform_moves!(move_sequence)
+      true
+    rescue InvalidMoveError
+      false
+    end
   end
 end
