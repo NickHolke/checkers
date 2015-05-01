@@ -1,7 +1,7 @@
 require 'byebug'
-require_relative 'piece.rb'
 
 class Board
+  attr_reader :rows
 
   def self.blank_grid
     Array.new(8) {Array.new(8)}
@@ -83,12 +83,4 @@ class Board
       end
     end
   end
-
-end
-
-if __FILE__ == $PROGRAM_NAME
-  board = Board.new
-
-  board.display
-
 end
