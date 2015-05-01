@@ -8,26 +8,29 @@ class Game
     @board = Board.new
   end
 
-  def winner
+  def won?
     pieces = @board.rows.flatten.compact
 
     if pieces.none? {|piece| piece.color == :white}
-      :black
+      return true
     elsif pieces.none? {|piece| piece.color == :black}
-      :white
+      return true
+    else
+      return false
     end
-    nil
   end
 
-  def won?
-    if winner == nil?
-      return false
-    else
-      return true
-    end
-  end
+  # def won?
+  #   if winner == nil?
+  #     return false
+  #   else
+  #     return true
+  #   end
+  # end
 
   def make_move
+    move_sequence = []
+
     puts "Select a piece"
     current_position = gets.chomp.split(',').map(&:to_i)
 
@@ -35,20 +38,30 @@ class Game
     a = gets.chomp
     if a == "N"
       puts "Enter Move"
-
-    move_sequence = gets.chomp.split(',').map(&:to_i)
-    debugger
-    @board[current_position].perform_moves(move_sequence)
+      boom = [gets.chomp.split(',').map(&:to_i)]
+      @board[current_position].perform_moves(boom)
+    else
+      loop do
+        puts "Enter Move. Type finished to stop"
+        c = gets.chomp
+        if c == "finished"
+          break
+        else
+          move_sequence <<  c.split(',').map(&:to_i)
+        end
+      end
+      @board[current_position].perform_moves(move_sequence)
+    end
   end
 
   def run
 
-
+    until won?
       @board.display
       make_move
-      @board.display
-      winner
+    end
 
+    "You won!"
   end
 end
 

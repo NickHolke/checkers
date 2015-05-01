@@ -9,7 +9,7 @@ class Board
 
   def initialize(rows = self.class.blank_grid, pop = true)
     @rows = rows
-    if pop
+    if pop == true
       populate
     end
   end
@@ -44,7 +44,7 @@ class Board
   end
 
   def deep_dup
-    dup_board = Board.new(pop=false)
+    dup_board = Board.new(rows = self.class.blank_grid, pop=false)
 
     pieces = @rows.flatten.compact
 
