@@ -59,6 +59,7 @@ class Game
     until won?
       @board.display
       make_move
+      @board.display
     end
 
     "You won!"
