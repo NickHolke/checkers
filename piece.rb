@@ -6,8 +6,8 @@ class Piece
   attr_reader :color
   attr_accessor :king, :position, :board
 
-  SLIDE_MOVES = {:W => [[-1,-1], [-1,1]], :B => [[1,-1], [1,1]]}
-  JUMP_MOVES = {:W => [[-2,2], [-2,-2]], :B => [[2,-2], [2,2]]}
+  SLIDE_MOVES = {:white => [[-1,-1], [-1,1]], :black => [[1,-1], [1,1]]}
+  JUMP_MOVES = {:white => [[-2,2], [-2,-2]], :black => [[2,-2], [2,2]]}
   KING_SLIDE_MOVES = [[-1,-1], [-1,1], [1,-1], [1,1]]
   KING_JUMP_MOVES = [[-2,2], [-2,-2], [2,-2], [2,2]]
 
@@ -51,14 +51,10 @@ class Piece
     []
   end
 
-  def inspect
-    @color
-  end
-
   def maybe_promote
-    if @color == :W && @position[0] == 0
+    if @color == :white && @position[0] == 0
       @king = true
-    elsif color == :B && @position[0] == 7
+    elsif color == :black && @position[0] == 7
       @king = true
     end
     nil
